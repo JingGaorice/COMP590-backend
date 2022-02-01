@@ -39,7 +39,7 @@ async function makeDataRequest(req, res){
 }
 
 async function makeDataRequestData2020(req, res){
-    const csv= require('fast-csv');
+    const csv= require('fast-csv')
     csv
         .parseStream(stream, {headers : true})
         .on("data", function(data){
