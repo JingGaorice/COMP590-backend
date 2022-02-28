@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cookieParser = require('cookie-parser');
+const csv2Json = require('./utils/csv2Json')
 
 const fs = require("fs");
 const csv = require("fast-csv");
@@ -75,62 +76,115 @@ async function makeDataRequestData2020(req, res){
 
 async function makeDataRequestByCounty(req, res){
     let stateName = req.params.stateCounty.toString();
+    let url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/daily_cases/new_daily_states_county/confirmed_cases_" + stateName.toLowerCase() + ".csv"
 
     const csv= require('fast-csv');
     let requestData2020 = Array(12).fill(0).map(row => new Array(31).fill({}));
     let requestData2021 = Array(12).fill(0).map(row => new Array(31).fill({}));
     let requestData2022 = Array(12).fill(0).map(row => new Array(31).fill({}));
 
+    // axios.get(url).then((response) => {
+    //     let data = response.data
+    //     console.log(JSON.parse(JSON.stringify(data)))
+    // })
 
-    var allCountiesStream = fs.createReadStream("./csv/confirmed_cases_" + stateName + ".csv");
-    csv
-        .parseStream(allCountiesStream, {headers : true})
-        .on("data", function(data){
-            // will only return the data of state+county
-            let copyData = JSON.parse(JSON.stringify(data));
-            let currentRowStateCountyInfo = data.Combined_Key;
-            for (let [key, value] of Object.entries(copyData)) {
-                if(isDate(key)){
-                    let dateList = returnDateList(key);
-                    let month = dateList[0], day = dateList[1], year = dateList[2];
+    // var allCountiesStream = fs.createReadStream("./csv/confirmed_cases_" + stateName + ".csv");
+    // csv
+    //     .parseStream(allCountiesStream, {headers : true})
+    //     .on("data", function(data){
+    //         // will only return the data of state+county
+    //         let copyData = JSON.parse(JSON.stringify(data));
+    //         let currentRowStateCountyInfo = data.Combined_Key;
+    //         for (let [key, value] of Object.entries(copyData)) {
+    //             if(isDate(key)){
+    //                 let dateList = returnDateList(key);
+    //                 let month = dateList[0], day = dateList[1], year = dateList[2];
+    //
+    //                 if(stateName.includes("+")){
+    //                     let stateCountyList = stateName.split("+");
+    //                     let state = removeSpace(stateCountyList[0]), county = removeSpace(stateCountyList[1]);
+    //
+    //                     if(currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)){
+    //                         if(year === 20){
+    //                            requestData2020[month - 1][day - 1][county] = value;
+    //                        } else if(year === 21){
+    //                            requestData2021[month - 1][day - 1][county] = value;
+    //                        } else{
+    //                             requestData2022[month - 1][day - 1][county] = value;
+    //                         }
+    //                     }
+    //                 } else{// will return the entire state data
+    //                     if(currentRowStateCountyInfo.includes(stateName)){
+    //                         let county = data.Admin2;
+    //
+    //                         if(year === 20){
+    //                             requestData2020[month - 1][day - 1][county] = value;
+    //                         } else if(year === 21){
+    //                             requestData2021[month - 1][day - 1][county] = value;
+    //                         } else{
+    //                             requestData2022[month - 1][day - 1][county] = value;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //
+    //
+    //
+    //
+    //     })
+    //     .on("end", function(){
+    //         //res.send({success: 'success'});
+    //         res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022});
+    //     });
 
-                    if(stateName.includes("+")){
-                        let stateCountyList = stateName.split("+");
-                        let state = removeSpace(stateCountyList[0]), county = removeSpace(stateCountyList[1]);
+    let result = await csv2Json.getJSONFromUrl(url);
 
-                        if(currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)){
-                            if(year === 20){
-                               requestData2020[month - 1][day - 1][county] = value;
-                           } else if(year === 21){
-                               requestData2021[month - 1][day - 1][county] = value;
-                           } else{
-                                requestData2022[month - 1][day - 1][county] = value;
-                            }
+    for(let i = 0; i <  result.length; i++) {
+        let copyData = result[i];
+        let currentRowStateCountyInfo = copyData['Combined_Key'].toString();
+        for (let [key, value] of Object.entries(copyData)) {
+            if (isDate(key)) {
+                let dateList = returnDateList(key);
+                let month = dateList[0], day = dateList[1], year = dateList[2];
+
+                if (stateName.includes("+")) {
+                    let stateCountyList = stateName.split("+");
+                    let state = removeSpace(stateCountyList[0]), county = removeSpace(stateCountyList[1]);
+
+                    if (currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)) {
+                        if (year === 20) {
+                            requestData2020[month - 1][day - 1][county] = value;
+                        } else if (year === 21) {
+                            requestData2021[month - 1][day - 1][county] = value;
+                        } else {
+                            requestData2022[month - 1][day - 1][county] = value;
                         }
-                    } else{// will return the entire state data
-                        if(currentRowStateCountyInfo.includes(stateName)){
-                            let county = data.Admin2;
+                    }
+                } else {// will return the entire state data
+                    if (currentRowStateCountyInfo.includes(stateName)) {
+                        let county = copyData.Admin2;
 
-                            if(year === 20){
-                                requestData2020[month - 1][day - 1][county] = value;
-                            } else if(year === 21){
-                                requestData2021[month - 1][day - 1][county] = value;
-                            } else{
-                                requestData2022[month - 1][day - 1][county] = value;
-                            }
+                        if (year === 20) {
+                            requestData2020[month - 1][day - 1][county] = value;
+                        } else if (year === 21) {
+                            requestData2021[month - 1][day - 1][county] = value;
+                        } else {
+                            requestData2022[month - 1][day - 1][county] = value;
                         }
                     }
                 }
             }
+        }
+    }
 
+    res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022})
+}
 
-
-
-        })
-        .on("end", function(){
-            //res.send({success: 'success'});
-            res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022});
-        });
+async function makeCsv2Json(req, res){
+    let url = req.body.url;
+    let result = await csv2Json.getJSONFromUrl(url);
+    res.send({result: result});
 }
 
 module.exports = (app) =>{
@@ -138,4 +192,5 @@ module.exports = (app) =>{
     app.get('/fetchAllData', makeDataRequest);
     app.get('/fetchData2020', makeDataRequestData2020);
     app.get('/fetchStateData/:stateCounty', makeDataRequestByCounty);
+    app.post('/csv2Json', makeCsv2Json);
 }
