@@ -79,9 +79,10 @@ async function makeDataRequestByCounty(req, res){
     const csv= require('fast-csv');
     let requestData2020 = Array(12).fill(0).map(row => new Array(31).fill({}));
     let requestData2021 = Array(12).fill(0).map(row => new Array(31).fill({}));
+    let requestData2022 = Array(12).fill(0).map(row => new Array(31).fill({}));
 
 
-    var allCountiesStream = fs.createReadStream("./csv/daily_confirmed _cases_county.csv");
+    var allCountiesStream = fs.createReadStream("./csv/confirmed_cases_" + stateName + ".csv");
     csv
         .parseStream(allCountiesStream, {headers : true})
         .on("data", function(data){
@@ -100,19 +101,22 @@ async function makeDataRequestByCounty(req, res){
                         if(currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)){
                             if(year === 20){
                                requestData2020[month - 1][day - 1][county] = value;
-                           } else{
+                           } else if(year === 21){
                                requestData2021[month - 1][day - 1][county] = value;
-                           }
+                           } else{
+                                requestData2022[month - 1][day - 1][county] = value;
+                            }
                         }
                     } else{// will return the entire state data
                         if(currentRowStateCountyInfo.includes(stateName)){
                             let county = data.Admin2;
 
                             if(year === 20){
-
                                 requestData2020[month - 1][day - 1][county] = value;
-                            } else{
+                            } else if(year === 21){
                                 requestData2021[month - 1][day - 1][county] = value;
+                            } else{
+                                requestData2022[month - 1][day - 1][county] = value;
                             }
                         }
                     }
@@ -125,7 +129,7 @@ async function makeDataRequestByCounty(req, res){
         })
         .on("end", function(){
             //res.send({success: 'success'});
-            res.send({requestData2020: requestData2020, requestData2021:requestData2021});
+            res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022});
         });
 }
 
