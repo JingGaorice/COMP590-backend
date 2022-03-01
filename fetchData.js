@@ -83,66 +83,13 @@ async function makeDataRequestByCounty(req, res){
     let requestData2021 = Array(12).fill(0).map(row => new Array(31).fill({}));
     let requestData2022 = Array(12).fill(0).map(row => new Array(31).fill({}));
 
-    // axios.get(url).then((response) => {
-    //     let data = response.data
-    //     console.log(JSON.parse(JSON.stringify(data)))
-    // })
-
-    // var allCountiesStream = fs.createReadStream("./csv/confirmed_cases_" + stateName + ".csv");
-    // csv
-    //     .parseStream(allCountiesStream, {headers : true})
-    //     .on("data", function(data){
-    //         // will only return the data of state+county
-    //         let copyData = JSON.parse(JSON.stringify(data));
-    //         let currentRowStateCountyInfo = data.Combined_Key;
-    //         for (let [key, value] of Object.entries(copyData)) {
-    //             if(isDate(key)){
-    //                 let dateList = returnDateList(key);
-    //                 let month = dateList[0], day = dateList[1], year = dateList[2];
-    //
-    //                 if(stateName.includes("+")){
-    //                     let stateCountyList = stateName.split("+");
-    //                     let state = removeSpace(stateCountyList[0]), county = removeSpace(stateCountyList[1]);
-    //
-    //                     if(currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)){
-    //                         if(year === 20){
-    //                            requestData2020[month - 1][day - 1][county] = value;
-    //                        } else if(year === 21){
-    //                            requestData2021[month - 1][day - 1][county] = value;
-    //                        } else{
-    //                             requestData2022[month - 1][day - 1][county] = value;
-    //                         }
-    //                     }
-    //                 } else{// will return the entire state data
-    //                     if(currentRowStateCountyInfo.includes(stateName)){
-    //                         let county = data.Admin2;
-    //
-    //                         if(year === 20){
-    //                             requestData2020[month - 1][day - 1][county] = value;
-    //                         } else if(year === 21){
-    //                             requestData2021[month - 1][day - 1][county] = value;
-    //                         } else{
-    //                             requestData2022[month - 1][day - 1][county] = value;
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //
-    //
-    //
-    //
-    //     })
-    //     .on("end", function(){
-    //         //res.send({success: 'success'});
-    //         res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022});
-    //     });
-
     let result = await csv2Json.getJSONFromUrl(url);
-
-    for(let i = 0; i <  result.length; i++) {
+    let len = 2;
+    let dateKeyObject = {};
+    for(let i = 0; i < result.length; i++) {
         let copyData = result[i];
         let currentRowStateCountyInfo = copyData['Combined_Key'].toString();
+
         for (let [key, value] of Object.entries(copyData)) {
             if (isDate(key)) {
                 let dateList = returnDateList(key);
@@ -153,32 +100,46 @@ async function makeDataRequestByCounty(req, res){
                     let state = removeSpace(stateCountyList[0]), county = removeSpace(stateCountyList[1]);
 
                     if (currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)) {
-                        if (year === 20) {
-                            requestData2020[month - 1][day - 1][county] = value;
-                        } else if (year === 21) {
-                            requestData2021[month - 1][day - 1][county] = value;
-                        } else {
-                            requestData2022[month - 1][day - 1][county] = value;
+                        let date = month + "/" + day + "/" + year;
+                        if(!dateKeyObject[date]){
+                            dateKeyObject[date] = {};
                         }
+                        dateKeyObject[date][county] = value;
                     }
                 } else {// will return the entire state data
                     if (currentRowStateCountyInfo.includes(stateName)) {
                         let county = copyData.Admin2;
 
-                        if (year === 20) {
-                            requestData2020[month - 1][day - 1][county] = value;
-                        } else if (year === 21) {
-                            requestData2021[month - 1][day - 1][county] = value;
-                        } else {
-                            requestData2022[month - 1][day - 1][county] = value;
+                        let date = month + "/" + day + "/" + year;
+                        if(!dateKeyObject[date]){
+                            dateKeyObject[date] = {};
                         }
+                        dateKeyObject[date][county] = value;
+
                     }
                 }
             }
         }
     }
 
-    res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022})
+    for (let [key, value] of Object.entries(dateKeyObject)) {
+        let dateList = returnDateList(key);
+        let month = dateList[0], day = dateList[1], year = dateList[2];
+
+        if(year === 20){
+            requestData2020[month - 1][day - 1] = value;
+        } else if(year === 21){
+            requestData2021[month - 1][day - 1] = value;
+        } else{
+            requestData2022[month - 1][day - 1] = value;
+        }
+    }
+
+    res.send({requestData2020: requestData2020,
+        requestData2021:requestData2021,
+        requestData2022:requestData2022,
+        dateKeyObject: dateKeyObject,
+    })
 }
 
 async function makeCsv2Json(req, res){
