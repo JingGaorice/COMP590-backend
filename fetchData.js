@@ -191,13 +191,21 @@ async function makeVaccineData(req, res) {
     // https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_Florida.csv
     state = req.params.state.toString();
     county = req.params.county?.toString();
+
+    state = state.charAt(0).toUpperCase() + state.slice(1);
+    county = county?.charAt(0).toUpperCase() + county?.slice(1);
+
     url = 'https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_' + state + '.csv';
     console.log(url)
     let result = await csv2Json.getJSONFromUrl(url);
-    if (county) {
-        result = result.filter(data=> data.recip_county == county);
+    if (!result) {
+        res.send({"error" : "[makeVaccineDateReq] result of 'csv2Json' is null, you may need to check the state name"})
+    }else {
+        if (county) {
+            result = result.filter(data=> data.recip_county == county);
+        }
+        res.send({res: result});
     }
-    res.send({res: result});
 }
 
 module.exports = (app) =>{
