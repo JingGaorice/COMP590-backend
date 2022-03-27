@@ -186,10 +186,25 @@ async function makeCsv2Json(req, res){
     res.send({result: result});
 }
 
+// fetch accine data by state + county
+async function makeVaccineData(req, res) {
+    // https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_Florida.csv
+    state = req.params.state.toString();
+    county = req.params.county?.toString();
+    url = 'https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_' + state + '.csv';
+    console.log(url)
+    let result = await csv2Json.getJSONFromUrl(url);
+    if (county) {
+        result = result.filter(data=> data.recip_county == county);
+    }
+    res.send({res: result});
+}
+
 module.exports = (app) =>{
     app.use(cookieParser());
     app.get('/fetchAllData', makeDataRequest);
     app.get('/fetchData2020', makeDataRequestData2020);
     app.get('/fetchStateData/:stateCounty', makeDataRequestByCounty);
+    app.get('/fetchVaccinedData/:state/:county?', makeVaccineData)
     app.post('/csv2Json', makeCsv2Json);
 }
