@@ -196,7 +196,6 @@ async function makeVaccineData(req, res) {
     county = county?.charAt(0).toUpperCase() + county?.slice(1);
 
     url = 'https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_' + state + '.csv';
-    console.log(url)
     let result = await csv2Json.getJSONFromUrl(url);
     if (!result) {
         res.send({"error" : "[makeVaccineDateReq] result of 'csv2Json' is null, you may need to check the state name"})
@@ -208,11 +207,87 @@ async function makeVaccineData(req, res) {
     }
 }
 
+// fetch the fisrt dose vaccine data by state name
+async function fetchFirstDose(req, res) {
+    state = req.params.state?.toString();
+    county = req.params.county?.toString();
+    // url located the cvs file in data repo
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/first_dose_county_state.csv"
+    let result = await csv2Json.getJSONFromUrl(url);
+    if (!result) {
+        res.send({"error" : "Error: please check state name."})
+    } else {
+        if (state) {
+            result = result.filter(data=> data.recip_state == state)
+        }
+        if (county) {
+            result = result.filter(data=> data.recip_county == county);
+        }
+        res.send({firstDose: result})
+    }
+}
+// fetch the second dose vaccine data by state name
+async function fetchSecondDose(req, res) {
+    state = req.params.state?.toString();
+    county = req.params.county?.toString();
+    // url located the cvs file in data repo
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/second_dose_county_state.csv"
+    let result = await csv2Json.getJSONFromUrl(url);
+    if (!result) {
+        res.send({"error" : "Error: please check state name."})
+    } else {
+        if (state) {
+            result = result.filter(data=> data.recip_state == state)
+        }
+        if (county) {
+            result = result.filter(data=> data.recip_county == county);
+        }
+        res.send({secondDose: result})
+    }
+}
+// fetch the booster vaccine data by state name
+async function fetchBooster(req, res) {
+    state = req.params.state?.toString();
+    county = req.params.county?.toString();
+    // url located the cvs file in data repo
+    url = "https://github.com/NUMBKV/COMP590-Data-Processing/blob/main/vaccination/booster_county_state.cshttps://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/daily_cases/new_daily_states.csvv"
+    let result = await csv2Json.getJSONFromUrl(url);
+    if (!result) {
+        res.send({"error" : "Error: please check state name."})
+    } else {
+        if (state) {
+            result = result.filter(data=> data.recip_state == state)
+        }
+        if (county) {
+            result = result.filter(data=> data.recip_county == county);
+        }
+        res.send({booster: result})
+    }
+}
+
+async function fetchStateNewData(req, res) {
+    state = req.params.state?.toString();
+    // url located the cvs file in data repo
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/daily_cases/new_daily_states.csv"
+    let result = await csv2Json.getJSONFromUrl(url);
+    if (!result) {
+        res.send({"error" : "Error: please check state name."})
+    } else {
+        if (state) {
+            result = result.filter(data=> data.Province_State == state)
+        }
+        res.send({newData: result})
+    }
+}
+
 module.exports = (app) =>{
     app.use(cookieParser());
     app.get('/fetchAllData', makeDataRequest);
     app.get('/fetchData2020', makeDataRequestData2020);
     app.get('/fetchStateData/:stateCounty', makeDataRequestByCounty);
     app.get('/fetchVaccinedData/:state/:county?', makeVaccineData)
-    app.post('/csv2Json', makeCsv2Json);
+    app.get('/fetchFirstDose/:state?/:county?', fetchFirstDose);
+    app.get('/fetchSecondDose/:state?/:county?', fetchSecondDose);
+    app.get('/fetchBooster/:state?/:county?', fetchBooster);
+    app.get('/fetchStateNewData/:state?', fetchStateNewData)
 }
