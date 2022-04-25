@@ -250,7 +250,7 @@ async function fetchBooster(req, res) {
     state = req.params.state?.toString();
     county = req.params.county?.toString();
     // url located the cvs file in data repo
-    url = "https://github.com/NUMBKV/COMP590-Data-Processing/blob/main/vaccination/booster_county_state.cshttps://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/daily_cases/new_daily_states.csvv"
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/booster_county_state.csv"
     let result = await csv2Json.getJSONFromUrl(url);
     if (!result) {
         res.send({"error" : "Error: please check state name."})
@@ -273,6 +273,7 @@ async function fetchStateNewData(req, res) {
     if (!result) {
         res.send({"error" : "Error: please check state name."})
     } else {
+        console.log(result)
         if (state) {
             result = result.filter(data=> data.Province_State == state)
         }
