@@ -2,7 +2,7 @@
 
 Team member: Duo Xu, Danfeng Yang, Siqing Zheng, JingGao
 
-## Description
+## Introduction
 
 The function of this Repository is taking the [data](https://github.com/NUMBKV/COMP590-Data-Processing) that analyzed by Data Processing Team, and provide a serious APIs for front-end team to get data based on different functions requirement. For example, get vaccine data, conform data based on state, county, etc.
 
@@ -401,9 +401,22 @@ Example:  `GET /fetchStateNewData/California`
 ## Implement Details
 
 - Util Folder
-  Implemented the function that fetches CSV data from data process team and transform to json file asynchronously.
+  - Implemented the function that fetches CSV data from data process team and transform to json file asynchronously.
   Handles errors, like it should have message out when fetching invalid url.
 - fetchData.js
-  Here include all main functions that process data for APIs calls
+  - Here include all main functions that process data for APIs calls
 - Index.js
-  This file is where we produce the APIs, which utilizes express.js framework to create API Urls. 
+  - This file is where we produce the APIs, which utilizes express.js framework to create API Urls. 
+  
+  
+## Technology used
+- Heroku: deploy online platform
+- express: api framework
+- Dependencies 
+  1. axios
+  2. body-parser
+  3. cookie-parser
+  4. csv-parser
+  5. csvtojson
+  6. fast-csv
+  7. got
