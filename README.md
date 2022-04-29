@@ -1,6 +1,6 @@
 # COMP590-backend
 
-Team member: Duo Xu, Danfeng Yang, Siqing Zheng, JingGao
+Team member: Duo Xu, Danfeng Yang, Siqing Zheng, JingGao, Kaiven Deng
 
 ## Introduction
 
@@ -404,7 +404,9 @@ Example:  `GET /fetchStateNewData/California`
   - Implemented the function that fetches CSV data from data process team and transform to json file asynchronously.
   Handles errors, like it should have message out when fetching invalid url.
 - fetchData.js
-  - Here include all main functions that process data for APIs calls
+  - Here include function for comfirmed cases
+- fetchVacine.js
+  - Here include functions for vaccine data
 - Index.js
   - This file is where we produce the APIs, which utilizes express.js framework to create API Urls. 
   
