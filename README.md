@@ -1,6 +1,6 @@
 # COMP590-backend
 
-Team member: Duo Xu, Danfeng Yang, Siqing Zheng, JingGao, Kaiven Deng
+Team member: Duo Xu(dx9), Danfeng Yang(dy33), Siqing Zheng(sz70), Jing Gao(), Kaiven Deng()
 
 ## Introduction
 
@@ -17,7 +17,7 @@ You are free to deploy by yourself.
 Here is how to Do it.
 
 - `git add .`
-- ``git commit -m ‘first commit`
+- `git commit -m ‘first commit`
 - `heroku login` The login page will pop out.
 - `heroku create` Create your application instance.
 - `git push heroku main` 
