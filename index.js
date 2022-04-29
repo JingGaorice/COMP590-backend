@@ -2,6 +2,7 @@ const express =require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dataFetch = require('./fetchData')
+const vacDataFetch = require('./fetchVaccine')
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -22,9 +23,8 @@ app.use(function(req, res, next) {
         return next();
     }
 });
-const hello = (req, res) => res.send({ hello: 'world1' });
-app.get('/', hello);
 dataFetch(app);
+vacDataFetch(app);
 const port = process.env.PORT || 3001;
 const server = app.listen(port, () => {
     const addr = server.address();

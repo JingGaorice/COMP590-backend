@@ -286,9 +286,6 @@ module.exports = (app) =>{
     app.get('/fetchAllData', makeDataRequest);
     app.get('/fetchData2020', makeDataRequestData2020);
     app.get('/fetchStateData/:stateCounty', makeDataRequestByCounty);
-    app.get('/fetchVaccinedData/:state/:county?', makeVaccineData)
-    app.get('/fetchFirstDose/:state?/:county?', fetchFirstDose);
-    app.get('/fetchSecondDose/:state?/:county?', fetchSecondDose);
-    app.get('/fetchBooster/:state?/:county?', fetchBooster);
     app.get('/fetchStateNewData/:state?', fetchStateNewData)
+    
 }
