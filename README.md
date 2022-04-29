@@ -1,6 +1,6 @@
 # COMP590-backend
 
-Team member: Duo Xu(dx9), Danfeng Yang(dy33), Siqing Zheng(sz70), Jing Gao(), Kaiven Deng()
+Team member: Duo Xu(dx9), Danfeng Yang(dy33), Siqing Zheng(sz70), Jing Gao(jg107), Kaiven Deng()
 
 ## Introduction
 
