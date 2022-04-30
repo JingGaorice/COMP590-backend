@@ -366,3 +366,105 @@ Example:  `GET /fetchStateNewData/California`
 }
 
 ```
+
+## Fetch removed outliers data accroding to State using the Median Filter algorithm
+
+### Request
+
+`GET /removeOutliers/medianFilter/:state`
+
+Example:  `GET /removeOutliers/medianFilter/california`
+
+
+### Response
+
+```json
+{
+    "booster": [
+        {
+            "UID": "84006001",
+            "iso2": "US",
+            "iso3": "USA",
+            "code3": "840",
+            "FIPS": "6001.0",
+            "Admin2": "Alameda",
+            "Province_State": "California",
+            "Country_Region": "US",
+            "Lat": "37.64629437",
+            "Long_": "-121.8929271",
+            "Combined_Key": "\"Alameda, California, US\"",
+            "1/22/20": "0",
+            ...
+        }
+    ]
+}
+
+```
+
+## Fetch removed outliers data accroding to State using the Cart algorithm
+
+### Request
+
+`GET /removeOutliers/cart/:state`
+
+Example:  `GET /removeOutliers/cart/california`
+
+
+### Response
+
+```json
+{
+    "booster": [
+        {
+            "UID": "84006001",
+            "iso2": "US",
+            "iso3": "USA",
+            "code3": "840",
+            "FIPS": "6001.0",
+            "Admin2": "Alameda",
+            "Province_State": "California",
+            "Country_Region": "US",
+            "Lat": "37.64629437",
+            "Long_": "-121.8929271",
+            "Combined_Key": "\"Alameda, California, US\"",
+            "1/22/20": "0",
+            ...
+        }
+    ]
+}
+
+```
+
+## Fetch removed outliers data accroding to State using the prophet algorithm
+
+### Request
+
+`GET /removeOutliers/prophet/:state`
+
+Example:  `GET /removeOutliers/prophet/california`
+
+
+### Response
+
+```json
+{
+    "booster": [
+        {
+            "UID": "84006001",
+            "iso2": "US",
+            "iso3": "USA",
+            "code3": "840",
+            "FIPS": "6001.0",
+            "Admin2": "Alameda",
+            "Province_State": "California",
+            "Country_Region": "US",
+            "Lat": "37.64629437",
+            "Long_": "-121.8929271",
+            "Combined_Key": "\"Alameda, California, US\"",
+            "1/22/20": "0",
+            ...
+        }
+    ]
+}
+
+```
