@@ -78,65 +78,9 @@ async function makeDataRequestByCounty(req, res){
     let stateName = req.params.stateCounty.toString();
     let url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/daily_cases/new_daily_states_county/confirmed_cases_" + stateName.toLowerCase() + ".csv"
 
-    const csv= require('fast-csv');
     let requestData2020 = Array(12).fill(0).map(row => new Array(31).fill().map(Object));
     let requestData2021 = Array(12).fill(0).map(row => new Array(31).fill().map(Object));
     let requestData2022 = Array(12).fill(0).map(row => new Array(31).fill().map(Object));
-
-    // axios.get(url).then((response) => {
-    //     let data = response.data
-    //     console.log(JSON.parse(JSON.stringify(data)))
-    // })
-
-    // var allCountiesStream = fs.createReadStream("./csv/confirmed_cases_" + stateName + ".csv");
-    // csv
-    //     .parseStream(allCountiesStream, {headers : true})
-    //     .on("data", function(data){
-    //         // will only return the data of state+county
-    //         let copyData = JSON.parse(JSON.stringify(data));
-    //         let currentRowStateCountyInfo = data.Combined_Key;
-    //         for (let [key, value] of Object.entries(copyData)) {
-    //             if(isDate(key)){
-    //                 let dateList = returnDateList(key);
-    //                 let month = dateList[0], day = dateList[1], year = dateList[2];
-    //
-    //                 if(stateName.includes("+")){
-    //                     let stateCountyList = stateName.split("+");
-    //                     let state = removeSpace(stateCountyList[0]), county = removeSpace(stateCountyList[1]);
-    //
-    //                     if(currentRowStateCountyInfo.includes(state) && currentRowStateCountyInfo.includes(county)){
-    //                         if(year === 20){
-    //                            requestData2020[month - 1][day - 1][county] = value;
-    //                        } else if(year === 21){
-    //                            requestData2021[month - 1][day - 1][county] = value;
-    //                        } else{
-    //                             requestData2022[month - 1][day - 1][county] = value;
-    //                         }
-    //                     }
-    //                 } else{// will return the entire state data
-    //                     if(currentRowStateCountyInfo.includes(stateName)){
-    //                         let county = data.Admin2;
-    //
-    //                         if(year === 20){
-    //                             requestData2020[month - 1][day - 1][county] = value;
-    //                         } else if(year === 21){
-    //                             requestData2021[month - 1][day - 1][county] = value;
-    //                         } else{
-    //                             requestData2022[month - 1][day - 1][county] = value;
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //
-    //
-    //
-    //
-    //     })
-    //     .on("end", function(){
-    //         //res.send({success: 'success'});
-    //         res.send({requestData2020: requestData2020, requestData2021:requestData2021, requestData2022:requestData2022});
-    //     });
 
     let result = await csv2Json.getJSONFromUrl(url);
 
@@ -186,84 +130,6 @@ async function makeCsv2Json(req, res){
     res.send({result: result});
 }
 
-// fetch accine data by state + county
-async function makeVaccineData(req, res) {
-    // https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_Florida.csv
-    state = req.params.state.toString();
-    county = req.params.county?.toString();
-
-    state = state.charAt(0).toUpperCase() + state.slice(1);
-    county = county?.charAt(0).toUpperCase() + county?.slice(1);
-
-    url = 'https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/vaccination_data_county/vaccination_data_' + state + '.csv';
-    let result = await csv2Json.getJSONFromUrl(url);
-    if (!result) {
-        res.send({"error" : "[makeVaccineDateReq] result of 'csv2Json' is null, you may need to check the state name"})
-    }else {
-        if (county) {
-            result = result.filter(data=> data.recip_county == county);
-        }
-        res.send({res: result});
-    }
-}
-
-// fetch the fisrt dose vaccine data by state name
-async function fetchFirstDose(req, res) {
-    state = req.params.state?.toString();
-    county = req.params.county?.toString();
-    // url located the cvs file in data repo
-    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/first_dose_county_state.csv"
-    let result = await csv2Json.getJSONFromUrl(url);
-    if (!result) {
-        res.send({"error" : "Error: please check state name."})
-    } else {
-        if (state) {
-            result = result.filter(data=> data.recip_state == state)
-        }
-        if (county) {
-            result = result.filter(data=> data.recip_county == county);
-        }
-        res.send({firstDose: result})
-    }
-}
-// fetch the second dose vaccine data by state name
-async function fetchSecondDose(req, res) {
-    state = req.params.state?.toString();
-    county = req.params.county?.toString();
-    // url located the cvs file in data repo
-    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/second_dose_county_state.csv"
-    let result = await csv2Json.getJSONFromUrl(url);
-    if (!result) {
-        res.send({"error" : "Error: please check state name."})
-    } else {
-        if (state) {
-            result = result.filter(data=> data.recip_state == state)
-        }
-        if (county) {
-            result = result.filter(data=> data.recip_county == county);
-        }
-        res.send({secondDose: result})
-    }
-}
-// fetch the booster vaccine data by state name
-async function fetchBooster(req, res) {
-    state = req.params.state?.toString();
-    county = req.params.county?.toString();
-    // url located the cvs file in data repo
-    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/main/vaccination/booster_county_state.csv"
-    let result = await csv2Json.getJSONFromUrl(url);
-    if (!result) {
-        res.send({"error" : "Error: please check state name."})
-    } else {
-        if (state) {
-            result = result.filter(data=> data.recip_state == state)
-        }
-        if (county) {
-            result = result.filter(data=> data.recip_county == county);
-        }
-        res.send({booster: result})
-    }
-}
 
 async function fetchStateNewData(req, res) {
     state = req.params.state?.toString();
