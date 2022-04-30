@@ -287,5 +287,6 @@ module.exports = (app) =>{
     app.get('/fetchData2020', makeDataRequestData2020);
     app.get('/fetchStateData/:stateCounty', makeDataRequestByCounty);
     app.get('/fetchStateNewData/:state?', fetchStateNewData)
+    app.post('/csv2Json', makeCsv2Json);
     
 }
