@@ -33,7 +33,7 @@ Run it on your local machine
 
 ## APIs
 
-Read api.md to see the REST API to the example app.
+Read [api.md](https://github.com/JingGaorice/COMP590-backend/blob/main/api.md) to see the REST API to the example app.
 
 
 
