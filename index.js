@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dataFetch = require('./fetchData')
 const vacDataFetch = require('./fetchVaccine')
-const outliersFetch = require('./fetchRemovedOutliersData')
+const accOutliersFetch = require('./fetchAccumulativeRemovedOutliersData')
+const rOutliersFetch = require('./fetchRemovedOutliersData')
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -26,7 +27,8 @@ app.use(function(req, res, next) {
 });
 dataFetch(app);
 vacDataFetch(app);
-outliersFetch(app);
+accOutliersFetch(app);
+rOutliersFetch(app);
 const port = process.env.PORT || 3001;
 const server = app.listen(port, () => {
     const addr = server.address();

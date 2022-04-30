@@ -5,46 +5,47 @@ const csv2Json = require('./utils/csv2Json')
 const fs = require("fs");
 const csv = require("fast-csv");
 
-async function fetchMedianFilter(req, res) {
+// fetch the booster vaccine data by state name
+async function fetchAccMedianFilter(req, res) {
     state = req.params.state?.toString();
     console.log(state)
     // url located the cvs file in data repo
-    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/remove-outlier-sean/remove_outlier_cases/median_filter/remove_outlier_" + state + ".csv"
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/remove-outlier-sean/cumulative_remove_outlier_cases/median_filter/cumulative_remove_outlier_" + state + ".csv"
     let result = await csv2Json.getJSONFromUrl(url);
     if (!result) {
         res.send({"error" : "Error: please check state name. For example, california"})
     } else {
-        res.send({medianFilter: result})
+        res.send({cumulativeMedianFilter: result})
     }
 }
 
-async function fetchCart(req, res) {
+async function fetchAccCart(req, res) {
     state = req.params.state?.toString();
     // url located the cvs file in data repo
-    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/remove-outlier-sean/remove_outlier_cases/CART/remove_outlier_" + state + ".csv"
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/remove-outlier-sean/cumulative_remove_outlier_cases/CART/cumulative_remove_outlier_" + state + ".csv"
     let result = await csv2Json.getJSONFromUrl(url);
     if (!result) {
         res.send({"error" : "Error: please check state name. For example, california"})
     } else {
-        res.send({cartModel: result})
+        res.send({cumulativeCartModel: result})
     }
 }
 
-async function fetchProphet(req, res) {
+async function fetchAccProphet(req, res) {
     state = req.params.state?.toString();
     // url located the cvs file in data repo
-    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/remove-outlier-sean/remove_outlier_cases/Prophet/remove_outlier_" + state + ".csv"
+    url = "https://raw.githubusercontent.com/NUMBKV/COMP590-Data-Processing/remove-outlier-sean/cumulative_remove_outlier_cases/Prophet/cumulative_remove_outlier_" + state + ".csv"
     let result = await csv2Json.getJSONFromUrl(url);
     if (!result) {
         res.send({"error" : "Error: please check state name. For example, california"})
     } else {
-        res.send({prophet: result})
+        res.send({cumulativeProphet: result})
     }
 }
 
 module.exports = (app) => {
-    app.get('/removedOutliers/medianFilter/:state', fetchMedianFilter)
-    app.get('/removedOutliers/cart/:state', fetchCart)
-    app.get('/removedOutliers/prophet/:state', fetchProphet)
+    app.get('/cumulativeRemovedOutliers/medianFilter/:state', fetchAccMedianFilter)
+    app.get('/cumulativeRemovedOutliers/cart/:state', fetchAccCart)
+    app.get('/cumulativeRemovedOutliers/prophet/:state', fetchAccProphet)
     // app.get('/fetchVaccinedData/removeOutliers/cart/:state/:county?', makeVaccineData)
 }
