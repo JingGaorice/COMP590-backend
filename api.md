@@ -367,20 +367,21 @@ Example:  `GET /fetchStateNewData/California`
 
 ```
 
-## Fetch removed outliers data accroding to State using the Median Filter algorithm
+## Fetch cumulative removed outliers data accroding to State using the Median Filter algorithm
 
 ### Request
 
-`GET /removeOutliers/medianFilter/:state`
+`GET /cumulativeRemovedOutliers/medianFilter/:state`
 
-Example:  `GET /removeOutliers/medianFilter/california`
+Example:  `GET /cumulativeRemovedOutliers/medianFilter/california`
 
 
 ### Response
 
 ```json
 {
-    "booster": [
+    {
+    "cumulativeMedianFilter": [
         {
             "UID": "84006001",
             "iso2": "US",
@@ -401,20 +402,20 @@ Example:  `GET /removeOutliers/medianFilter/california`
 
 ```
 
-## Fetch removed outliers data accroding to State using the Cart algorithm
+## Fetch cumulative removed outliers data accroding to State using the Cart algorithm
 
 ### Request
 
-`GET /removeOutliers/cart/:state`
+`GET /cumulativeRemovedOutliers/cart/:state`
 
-Example:  `GET /removeOutliers/cart/california`
+Example:  `GET /cumulativeRemovedOutliers/cart/california`
 
 
 ### Response
 
 ```json
 {
-    "booster": [
+    "cumulativeCartModel": [
         {
             "UID": "84006001",
             "iso2": "US",
@@ -435,20 +436,20 @@ Example:  `GET /removeOutliers/cart/california`
 
 ```
 
-## Fetch removed outliers data accroding to State using the prophet algorithm
+## Fetch cumulative removed outliers data accroding to State using the prophet algorithm
 
 ### Request
 
-`GET /removeOutliers/prophet/:state`
+`GET /cumulativeRemovedOutliers/prophet/:state`
 
-Example:  `GET /removeOutliers/prophet/california`
+Example:  `GET /cumulativeRemovedOutliers/prophet/california`
 
 
 ### Response
 
 ```json
 {
-    "booster": [
+    "cumulativeProphet": [
         {
             "UID": "84006001",
             "iso2": "US",
@@ -468,3 +469,45 @@ Example:  `GET /removeOutliers/prophet/california`
 }
 
 ```
+
+## Fetch remove outliers data to state using filter median/cart/prophet algorithms
+
+These apis are similar to the cumulative outliers-removed data, but the `cumulativeRemovedOutliers` should be replaced by `removedOutliers`.
+
+### Requests
+
+- `GET /removedOutliers/medianFilter/:state`
+- `GET /removedOutliers/cart/:state`
+- `GET /removedOutliers/prophet/:state`
+
+### Responses
+```json
+{
+    "medianFilter": [
+        {
+            "UID": "84006001",
+            ...
+        }
+    ]
+}
+
+{
+    "cart": [
+        {
+            "UID": "84006001",
+            ...
+        }
+    ]
+}
+
+{
+    "prophet": [
+        {
+            "UID": "84006001",
+            ...
+        }
+    ]
+}
+```
+
+
